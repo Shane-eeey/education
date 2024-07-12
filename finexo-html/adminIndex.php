@@ -131,6 +131,20 @@
           </p>
           <button class="add-module-button" onclick="location.href='add_module.php'">Add Module</button>
         </div>
+        <h2>Filter Modules</h2>
+        <form action="adminIndex.php" method="get">
+            <label for="filterGrade">Select Grade:</label>
+            <select name="filterGrade">
+                <option value="">All</option>
+                <option value=1>Grade 1</option>
+                <option value=2>Grade 2</option>
+                <option value=3>Grade 3</option>
+                <option value=4>Grade 4</option>
+                <option value=5>Grade 5</option>
+                <option value=6>Grade 6</option>
+            </select>
+            <input type="submit" value="Filter">
+        </form>
         <table border="1">
             <tr>
                 <th>ID</th>

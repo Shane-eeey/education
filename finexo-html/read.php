@@ -2,7 +2,13 @@
 include 'config.php';
 
 $sql = "SELECT * FROM modules ";
+$filterGrade = isset($_GET['filterGrade']) ? $_GET['filterGrade'] : '';
+
+if ($filterGrade != '') {
+    $sql .= " WHERE grade='$filterGrade'";
+}
 $result = $conn->query($sql);
+
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
