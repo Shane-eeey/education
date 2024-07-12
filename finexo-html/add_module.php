@@ -1,21 +1,38 @@
 <?php
+session_start();
 include 'config.php';
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $moduleName = $_POST['moduleName'];
+    $module_category = $_POST['module_category'];
+    $module_grade = $_POST['grade'];
+    $pdfFile = $_FILES['pdfFile']['name'];
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($_FILES["pdfFile"]["name"]);
 
-    $sql = "SELECT * FROM modules WHERE id=$id";
-    $result = $conn->query($sql);
-    $row = $result->fetch_assoc();
+    if (move_uploaded_file($_FILES["pdfFile"]["tmp_name"], $target_file)) {
+        $sql = "INSERT INTO modules (moduleName, `category`, `grade`, `pdfFile`) VALUES ('$moduleName', '$module_category',  '$module_grade', '$pdfFile')";
+        if ($conn->query($sql) === TRUE) {
+            echo '<script>alert("NEW RECORD ADDED SUCCESSFULLY!");</script>';
+            $_SESSION['moduleName'] = $moduleName;
+            echo '<script>window.location.assign("adminIndex.php");</script>';
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+    } else {
+        echo "Sorry, there was an error uploading your file.";
+    }
+
+    header("Location: adminIndex.php");
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Module</title>
+    <title>Add Module</title>
     <style>
         *{
             margin: 0;
@@ -131,43 +148,39 @@ if (isset($_GET['id'])) {
 </head>
 <body>
     <div class="wrapper">
-        <h1>Update Module</h1>
-        <form method="post" action="update_process.php" enctype="multipart/form-data">
+    <h1>Add New Module</h1>
+    <form method="post" action="add_module.php" enctype="multipart/form-data">
         <div class="input-box">
-            <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+            <input type="text" id="moduleName" name="moduleName" placeholder="Module name: "required>
         </div>
         <div class="input-box">
-            <input type="text" name="moduleName" value="<?php echo $row['moduleName']; ?>" required><br>
-        </div>
-        <div class="input-box">
-                <select id="module_category" name="module_category" value="<?php echo $row['category']; ?>"required>
+                <select id="module_category" name="module_category" required>
                     <option value="" disabled selected>Category:</option>
-                    <?php
-                        $category = $row['category'];
-                        if ($category == "English") {
-                            echo "<option value='English' selected>English</option>";
-                            echo "<option value='Math'>Math</option>";
-                            echo "<option value='Filipino'>Filipino</option>";
-                        } elseif ($category == "Math") {
-                            echo "<option value='English'>English</option>";
-                            echo "<option value='Math' selected>Math</option>";
-                            echo "<option value='Filipino'>Filipino</option>";
-                        } elseif ($category == "Filipino") {
-                            echo "<option value='English'>English</option>";
-                            echo "<option value='Math'>Math</option>";
-                            echo "<option value='Filipino' selected>Filipino</option>";
-                        }
-                    ?>
+                    <option value="English">English</option>
+                    <option value="Math">Math</option>
+                    <option value="Filipino">Filipino</option>
                 </select>
                 <i class='bx bxs-book'></i>
         </div>
         <div class="input-box">
-            <label for="pdfFile">Uploaded PDF:</label>
-            <input type="file" id="pdfFile" name="pdfFile" accept="application/pdf" value="<?php echo $row['pdfFile']; ?>"required>
-            <p>Current PDF: <?php echo $row['pdfFile'];?></p> 
-            
+                <select id="grade" name="grade" required>
+                    <option value="" disabled selected>Grade:</option>
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                    <option value=6>6</option>
+                </select>
+                <i class='bx bxs-book'></i>
         </div>
-        <input type="submit" name="updbtn" class="btn" value="Update Module">
+        <div class="input-box">
+            <label for="pdfFile">Upload PDF:</label>
+            <input type="file" id="pdfFile" name="pdfFile" accept="application/pdf" required>
+        </div>
+        <input type="submit" name="addbtn" class="btn" value="Add Module">
+    </form>
+
     </div>
 </body>
 </html>

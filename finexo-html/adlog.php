@@ -115,7 +115,7 @@
 </head>
 <body>
   <div class="wrapper">
-    <form action="index2.html" method="post">
+    <form action="adminIndex.php" method="post">
       <h1>Admin Log In</h1>
       <div class="input-box">
         <input type="text"id="adminid" name="adminid" placeholder="Admin ID" required>

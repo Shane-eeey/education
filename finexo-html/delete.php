@@ -11,6 +11,6 @@ if (isset($_GET['id'])) {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
 
-    header("Location: index.php");
+    header("Location: adminIndex.php");
 }
 ?>
